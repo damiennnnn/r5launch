@@ -4,10 +4,9 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Threading;
 using CustomTitleBarTemplate.ViewModels;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
+using System.Timers;
 
 namespace CustomTitleBarTemplate.Views
 {
@@ -15,6 +14,19 @@ namespace CustomTitleBarTemplate.Views
     {
         private ToggleButton darkThemeToggleButton;
         private ToggleButton defaultStyleToggleButton;
+
+        private ProgressBar progressBar;
+        private TextBlock mainPageButton;
+        private TextBlock modPageButton;
+        private TextBlock settingsPageButton;
+
+        private Border MainPage;
+        private Border ModPage;
+        private Border SettingsPage;
+
+        public double progress = 0;
+        private int currentPage = 0;
+        // 0 = main, 1 = mod
 
         private bool isDefaultStyle = false;
         private bool isDarkTheme = false;
@@ -26,32 +38,84 @@ namespace CustomTitleBarTemplate.Views
             this.AttachDevTools();
             #endif
 
-
-            // Do not use a custom title bar on Linux, because there are too many possible options.
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) == true)
-            {
-                UseNativeTitleBar();
-            }
-
             this.DataContext = new MainWindowViewModel(this);
 
-            this.Height = 400;
-            this.Width = 600;
+            progressBar = this.FindControl<ProgressBar>("progBar");
+            mainPageButton = this.FindControl<TextBlock>("mainButton");
+            modPageButton = this.FindControl<TextBlock>("modButton");
+            settingsPageButton = this.FindControl<TextBlock>("settingsButton");
+
+            MainPage = this.FindControl<Border>("MainPage");
+            ModPage = this.FindControl<Border>("ModPage");
+            SettingsPage = this.FindControl<Border>("SettingsPage");
+
+            mainPageButton.PointerPressed += MainPageClick;
+            modPageButton.PointerPressed += ModPageClick;
+            settingsPageButton.PointerPressed += SettingsPageClick;
+
+            this.CanResize = false;
+            this.Height = 500;
+            this.Width = 800;
             this.Padding = new Thickness(
                             this.OffScreenMargin.Left,
                             this.OffScreenMargin.Top,
                             this.OffScreenMargin.Right,
                             this.OffScreenMargin.Bottom);
 
-            darkThemeToggleButton = this.FindControl<ToggleButton>("DarkThemeToggleButton");
-            darkThemeToggleButton.Checked += SetDarkTheme;
-            darkThemeToggleButton.Unchecked += SetLightTheme;
-
-            defaultStyleToggleButton = this.FindControl<ToggleButton>("DefaultStyleToggleButton");
-            defaultStyleToggleButton.Checked += SetDefaultTheme;
-            defaultStyleToggleButton.Unchecked += SetFluentTheme;
-
             Application.Current.Styles[1] = App.FluentLight;
+            SwitchTheme();
+            SetVisibility(MainPage, mainPageButton, true);
+            SetVisibility(SettingsPage, settingsPageButton, false);
+            SetVisibility(ModPage, modPageButton, false);
+
+            Timer timer = new Timer();
+            timer.Interval = 20;
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+
+        }
+
+        private void SetVisibility(Border border, TextBlock button, bool visible)
+        {
+            border.IsEnabled = visible;
+            border.IsVisible = visible;
+            button.Background = new SolidColorBrush(Color.FromRgb(38, 38, 38), visible ? 1 : 0);
+        }
+
+        private void SettingsPageClick(object sender, PointerPressedEventArgs e)
+        {
+            SetVisibility(MainPage, mainPageButton, false);
+            SetVisibility(SettingsPage, settingsPageButton, true);
+            SetVisibility(ModPage, modPageButton, false);
+        }
+
+
+        private void ModPageClick(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            SetVisibility(MainPage, mainPageButton, false);
+            SetVisibility(SettingsPage, settingsPageButton, false);
+            SetVisibility(ModPage, modPageButton, true);
+        }
+
+        private void MainPageClick(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            SetVisibility(MainPage, mainPageButton, true);
+            SetVisibility(SettingsPage, settingsPageButton, false);
+            SetVisibility(ModPage, modPageButton, false);
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Dispatcher.UIThread.InvokeAsync(() => 
+            progressBar.Value += 1);
+        }
+
+        public void SwitchTheme()
+        {
+            if (isDarkTheme)
+                SetLightTheme(null, null);
+            else
+                SetDarkTheme(null, null); // sender and eventargs have no use here
         }
 
         private void SetLightTheme(object sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -72,22 +136,7 @@ namespace CustomTitleBarTemplate.Views
             Application.Current.Resources["MacOsWindowTitleColor"] = new SolidColorBrush { Color = new Color(255, 153, 158, 161) };
             Cursor = new Cursor(StandardCursorType.Arrow);
             isDarkTheme = true;
-        }
 
-        private void SetDefaultTheme(object sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            Cursor = new Cursor(StandardCursorType.Wait);
-            Application.Current.Styles[1] = isDarkTheme ? App.DefaultDark : App.DefaultLight;
-            Cursor = new Cursor(StandardCursorType.Arrow);
-            isDefaultStyle = true;
-        }
-
-        private void SetFluentTheme(object sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            Cursor = new Cursor(StandardCursorType.Wait);
-            Application.Current.Styles[1] = isDarkTheme ? App.FluentDark : App.FluentLight;
-            Cursor = new Cursor(StandardCursorType.Arrow);
-            isDefaultStyle = false;
         }
 
         private void UseNativeTitleBar()

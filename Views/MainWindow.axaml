@@ -2,41 +2,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:resx="clr-namespace:wpfapplicationname.Properties"
+        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
         xmlns:titlebars="clr-namespace:CustomTitleBarTemplate.Views.CustomTitleBars;assembly=CustomTitleBarTemplate"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
         x:Class="CustomTitleBarTemplate.Views.MainWindow"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
         Icon="/Assets/Images/Icon.ico"
-        Title="Custom TitleBar">
+        Title="R5Launcher">
+
 
   <NativeMenu.Menu>
     <NativeMenu>
-      <NativeMenuItem Header="File">
-        <NativeMenuItem.Menu>
-          <NativeMenu>
-            <NativeMenuItem Header="Open"/>
-            <NativeMenuItem Header="Recent">
-              <NativeMenuItem.Menu>
-                <NativeMenu/>
-              </NativeMenuItem.Menu>
-            </NativeMenuItem>
-            <NativeMenuItem Header="Quit Avalonia"
-                            Gesture="CTRL+Q"
-                            Command="{Binding QuitProgramCommand}"/>
-          </NativeMenu>
-        </NativeMenuItem.Menu>
-      </NativeMenuItem>
-      <NativeMenuItem Header="Edit">
-        <NativeMenuItem.Menu>
-          <NativeMenu>
-            <NativeMenuItem Header="Copy"/>
-            <NativeMenuItem Header="Paste"/>
-          </NativeMenu>
-        </NativeMenuItem.Menu>
-      </NativeMenuItem>
+      <NativeMenuItem Header="R5Launcher" IsEnabled="False" ToggleType="None"></NativeMenuItem>
     </NativeMenu>
   </NativeMenu.Menu>
 
@@ -50,19 +31,105 @@
              Name="ContentWrapper">
     <titlebars:WindowsTitleBar IsSeamless="True"></titlebars:WindowsTitleBar>
     <titlebars:MacosTitleBar IsSeamless="False"></titlebars:MacosTitleBar>
-    <DockPanel Background="Transparent">
-      <StackPanel HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                  Spacing="10">
-        <ToggleButton Name="DarkThemeToggleButton"
-                      HorizontalAlignment="Center"
-                      Content="Dark Theme"></ToggleButton>
-        <ToggleButton Name="DefaultStyleToggleButton"
-                      HorizontalAlignment="Center"
-                      Content="Default Style"></ToggleButton>
+
+    <DockPanel VerticalAlignment="Bottom">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="5"/>
+        <RowDefinition Height="305"/>
+        <RowDefinition Height="25"/>
+        <RowDefinition Height="100"/>
+      </Grid.RowDefinitions>
+
+      <Border Name="MainPage" Grid.Row="1" Grid.Column="0" Background="Transparent"  Height="350" >
+        <StackPanel Orientation="Vertical" Margin="10,0">
+          <Label Content="R5 Apex"
+               FontSize="32"
+               FontWeight="SemiBold"/>
+
+          <Button Content="placeholders"></Button>
+          <Image
+            Source="/Assets/Images/worldsedge.jpeg"
+            Width="200" Height="200" Stretch="UniformToFill"></Image>
+        </StackPanel>
+      </Border>
+
+      <Border Name="ModPage" IsEnabled="False" IsVisible="False" Grid.Row="1" Grid.Column="0" Background="Transparent"  Height="350" >
+        <StackPanel Orientation="Vertical" Margin="10,0">
+          <Label Content="Mods"
+               FontSize="32"
+               FontWeight="SemiBold"/>
+
+          <StackPanel Name="modList" Orientation="Vertical" Spacing="5">
+            <CheckBox Content="mod 1"></CheckBox>
+            <CheckBox Content="mod 2"></CheckBox>
+            <CheckBox Content="mod 3"></CheckBox>
+            <CheckBox Content="mod 4"></CheckBox>
+            <CheckBox Content="mod 5"></CheckBox>
+            
+          </StackPanel>
+
+        </StackPanel>
+      </Border>
+
+      <Border Name="SettingsPage" IsEnabled="False" IsVisible="False" Grid.Row="1" Grid.Column="0" Background="Transparent"  Height="350" >
+        <StackPanel Orientation="Vertical" Margin="10,0" Spacing="7" HorizontalAlignment="Center">
+
+          <StackPanel Orientation="Horizontal" Spacing="5">
+            <Label Content="Game Path" FontSize="12"></Label>
+            <TextBox Width="300" FontSize="12" Text="C:/r5reloaded/r5apex.exe"></TextBox>
+          </StackPanel>
+          
+          <StackPanel Orientation="Horizontal" Spacing="5">
+            <Label Content="Launch Options:" FontSize="12"></Label>
+            <TextBox Width="270" FontSize="12" Text="+fps_max 999"></TextBox>
+          </StackPanel>
+
+        </StackPanel>
+      </Border>
+      
+      <Border Grid.Row="2" Grid.Column="0" Background="Transparent" Height="30">
+        <StackPanel Orientation="Horizontal" Spacing="0" HorizontalAlignment="Stretch" Margin="2,0">
+          <TextBlock Name="mainButton" FontWeight="Thin" VerticalAlignment="Center" TextAlignment="Center" Width="266" MinWidth="265" FontSize="20" Text="             Main             "></TextBlock>
+          <TextBlock Name="modButton"  FontWeight="Thin" VerticalAlignment="Center" TextAlignment="Center" Width="266" MinWidth="265" FontSize="20" Text="             Mods             "></TextBlock>
+          <TextBlock Name="settingsButton"  FontWeight="Thin" VerticalAlignment="Center" TextAlignment="Center" Width="266" MinWidth="265" FontSize="20" Text="           Settings           "></TextBlock>
+        </StackPanel>
+      </Border>
+      
+    <Border Grid.Row="3" Grid.Column="0" Background="#262626"  Height="100">
+
+      <StackPanel Orientation="Horizontal" Spacing="15" Margin="10,10">
+
+        <StackPanel Orientation="Vertical" Spacing="12">
+
+
+          <ProgressBar
+            Name="progBar"
+            Width="515"
+            Height="40"
+            Maximum="100"
+            Value="0"
+            Foreground="#ff6600"
+            Background="#333333"
+          >
+          </ProgressBar>
+          
+          <Label Name="statusLabel" Content="Version: 0.x.x XX/XX/XX" FontSize="18" FontWeight="Thin"></Label>
+        </StackPanel>
+        <Button 
+          Name="launchButton"
+          Content="Launch"
+          Width="250"
+          Height="75"
+          Background="#e62e00"
+          />
       </StackPanel>
       
+    </Border>
+
+    </Grid>
     </DockPanel>
-  </DockPanel>
+    </DockPanel>
+    
 
 </Window>

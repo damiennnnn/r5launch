@@ -2,6 +2,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
+using Projektanker.Icons.Avalonia;
+using Projektanker.Icons.Avalonia.FontAwesome;
 
 namespace CustomTitleBarTemplate
 {
@@ -16,8 +18,16 @@ namespace CustomTitleBarTemplate
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
+                .AfterSetup(AfterSetupCallback)
                 .UsePlatformDetect()
                 .LogToTrace()
                 .UseReactiveUI();
+
+        private static void AfterSetupCallback(AppBuilder appBuilder)
+        {
+            // Register icon provider(s)
+            IconProvider.Register<FontAwesomeIconProvider>();
+        }
     }
+
 }

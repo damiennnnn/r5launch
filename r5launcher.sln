@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTitleBarTemplate", "CustomTitleBarTemplate.csproj", "{C23C5068-79D6-4F28-856B-82C09E2D7673}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "r5launcher", "r5launcher.csproj", "{C23C5068-79D6-4F28-856B-82C09E2D7673}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
